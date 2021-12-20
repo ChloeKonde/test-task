@@ -1,6 +1,7 @@
 import requests 
 import time
 import smtp
+from datetime import datetime
 
 
 def update_lead():
@@ -36,10 +37,11 @@ def create_note(element_id, element_type, text, note_type):
     r = requests.post(notes_url, headers={'Content-Type':'application/json', 'Authorization': f"Bearer {token}"}, json=data)
     print(r.status_code)
 
+
 def get_client_info(id):
     r = requests.get(contacts_url+f"?id={id}", headers={'Content-Type':'application/json', 'Authorization': f"Bearer {token}"})
     data = r.json()
-    # print(data["_embedded"]["items"][0]["custom_fields"][0]["values"][0]["value"])
+    # print(data["_embedded"]["items"][0]["custom_fields"][0]["values"][0]["value"]) #prints email
     return data["_embedded"]["items"][0]["custom_fields"][0]["values"][0]["value"]
 
 
@@ -59,11 +61,13 @@ def create_task(element_id, element_type, task_type, text):
          "created_by": "7745563"
          }]}
 
+
+    ts = datetime.utcfromtimestamp(timestamp+86400).strftime('%Y-%m-%d %H:%M:%S')
     r = requests.post(task_url, headers={'Content-Type':'application/json', 'Authorization': f"Bearer {token}"}, json=data)
     print(r.status_code)
     update_lead()
-    create_note(464617, 1, text, 4)
-    smtp.sent_email(text, 'Meeting', f"data {timestamp+86400}\nwhere -tbd link-")
+    create_note(464617, 1, f"meeting at {ts}", 4)
+    smtp.sent_email(text, 'Meeting', f"data {ts}\nwhere -tbd link-")
 
 
 sub_domain = "cleaningcompany1"
@@ -168,7 +172,7 @@ print(r.status_code)
 r = requests.get(contacts_url, headers={'Content-Type':'application/json', 'Authorization': f"Bearer {token}"})
 data = r.json()
 contacts_ids = list(map(lambda x: x['id'], data["_embedded"]["items"]))
-# print(contacts_ids)
+print(contacts_ids)
 
 
 leads_url = f"https://{sub_domain}.amocrm.com/api/v2/leads"
