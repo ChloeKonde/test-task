@@ -47,9 +47,10 @@ print(credential.sid) #CR5fe906ec4300c41fc34e2f2224c5bc96
 
 call = client.calls \
     .create(
-         twiml='<Response><Say>Hello and thanks for connecting to your SIP network!</Say></Response>',
+         twiml='<Response><Record timeout="10" transcribe="true" /><Say>Hello and thanks for connecting to your SIP network!</Say></Response>',
          to='sip:login@astfgl.sip.twilio.com',
          from_='+14154834991'
      )
 
 print(call.sid)
+print(call.subresource_uris['recordings'])

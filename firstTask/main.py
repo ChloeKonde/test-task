@@ -3,6 +3,7 @@ import time
 import smtp
 from datetime import datetime
 
+# {"UNIQ":"CA552058cc61cd583c496cc9e3f995f4ad","PHONE":"+18443326060","DURATION":23,"FROM":7745563,"SRC":"amo_twilio6","call_result":"i","call_status":"4","LINK":"https://api.twilio.com/2010-04-01/Accounts/ACca5a7f6c10411889563d7b39af291704/Calls/CA552058cc61cd583c496cc9e3f995f4ad/Recordings/RE5b66a7e7158c103f682e0b99c1b1f685.mp3"}
 
 def update_lead():
     timestamp = int(time.time())
@@ -20,19 +21,41 @@ def update_lead():
 
 def create_note(element_id, element_type, text, note_type):
     timestamp = int(time.time())
-    data = {
+    if note_type == 11:
+       data = {
         "add": [
-      {
-         "element_id": f"{element_id}",
-         "element_type": f"{element_type}",
-         "text": f"{text}",
-         "note_type": f"{note_type}",
-         "created_at": f"{timestamp}",
-         "responsible_user_id": "7745563",
-         "created_by": "7745563"
-      }
-   ]
-    }
+        {
+            "element_id": f"464617",
+            "element_type": f"1",
+            "note_type": f"{note_type}",
+            "params":[{
+                "UNIQ": "CA552058cc61cd583c496cc9e3f995g4ad",
+                "LINK": "https://api.twilio.com/cowbell.mp3",
+                "PHONE": "+14154834991",
+                "SRC": "amo_twilio6",
+                "DURATION" : "15",
+                "call_status": "4",
+                "call_result":f"{text}"
+            }],
+            "created_at": f"{timestamp}",
+            "responsible_user_id": "7745563",
+            "created_by": "7745563"
+        }]
+        }
+    else:
+        data = {
+            "add": [
+            {
+            "element_id": f"{element_id}",
+            "element_type": f"{element_type}",
+            "text": f"{text}",
+            "note_type": f"{note_type}",
+            "created_at": f"{timestamp}",
+            "responsible_user_id": "7745563",
+            "created_by": "7745563"
+            }
+            ]
+        }
     notes_url = "https://cleaningcompany1.amocrm.com/api/v2/notes"
     r = requests.post(notes_url, headers={'Content-Type':'application/json', 'Authorization': f"Bearer {token}"}, json=data)
     print(r.status_code)
@@ -184,3 +207,5 @@ for i in range (0,10):
 print(r.status_code)
 
 create_task(251041, 2, 2, get_client_info(464617))
+
+create_note(251041, 2, "Note", 11)
